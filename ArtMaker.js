@@ -158,22 +158,22 @@ class ArtMaker {
         return art;
     }
 
-    // /*
-    //  * Takes in args[0] as the filename in the directory
-    //  */
-    // static main(args) {
-    //     // In Node.js, process.argv[0] is "node", process.argv[1] is the script name,
-    //     // so the equivalent of args[0] in Java is process.argv[2] and args[1] is process.argv[3]
-    //     if (args.length < 4) {
-    //         console.log("Usage: node script.js <imageSize> <imageFileName>");
-    //         return;
-    //     }
-    //     let imageSize = parseInt(args[2]);
-    //     let imageFile = path.join(__dirname, "Images", args[3]);
-    //     let artmaker = new ArtMaker(imageSize, imageFile);
+    /*
+     * Takes in args[0] as the filename in the directory
+     */
+    static main(args) {
+        // In Node.js, process.argv[0] is "node", process.argv[1] is the script name,
+        // so the equivalent of args[0] in Java is process.argv[2] and args[1] is process.argv[3]
+        if (args.length < 4) {
+            console.log("Usage: node script.js <imageSize> <imageFileName>");
+            return;
+        }
+        let imageSize = parseInt(args[2]);
+        let imageFile = path.join(__dirname, "Images", args[3]);
+        let artmaker = new ArtMaker(imageSize, imageFile);
 
-    //     document.write(artmaker.ASCII());
-    // }
+        document.write(artmaker.ASCII());
+    }
 }
 
 /* Execute main if this script is run directly */
