@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, user-scalable=no" />    <title>ASCII Art Maker</title>
+    <link rel="stylesheet" href="inputs.css">
     <style>
         body {
             font-family: monospace;
@@ -20,40 +21,8 @@
             display: inline-grid;
             grid-template-columns: auto auto auto;
         }
-        .imageInput{
-            margin: auto;
-            background-color: black;
-            color:white;
-            background-blend-mode: color;
-            transition: transform .25s;
-        }
-        .imageInput:active{
-            transform: translate(0px, 5px);
-            -webkit-transform: translate(0px, 5px);
-            box-shadow: 0px 1px 0px 0px;
-        }
-        .imageInput:hover{
-            transform: scale(1.2) perspective(1px)
-        }
-        .choose-file{
-            position: relative;
-            background: linear-gradient(black 60%, white);
-            border-color:black;
-            visibility: transparent;
-            color: transparent;            
-        }
-        .choose-file::-webkit-file-upload-button{
-            color: transparent;            
-            background-color: transparent;
-            border: dotted;
-            border-color: white;
-            border-style:groove;
-            color:white;
-            text-shadow: #FC0 1px 0 10px;
-        }
         .slider{
-            cursor: pointer;
-            padding:1em;
+            padding: 1em;
         }
         .art{
             text-align: center;            
@@ -94,31 +63,58 @@
 
     <script>
         var size = document.getElementById('sizeSlider').value;
-        var image;
+        var image = new Image();
         var contrast;
         
+        // function changeImage(input, slider, slidervalue){
+        //     input = document.getElementById(slider).value;
+        //     document.getElementById(slidervalue).textContent = input;
+        //     // generateASCII(image, input);
+        // }
 
-        document.getElementById('sizeSlider').oninput = (()=>{
+        // document.getElementById('sizeSlider').oninput = changeImage(size, 'sizeSlider', 'sizeValue');
+
+        // document.getElementById('sizeSlider').oninput = function(input, slider, slidervalue){
+        //     size = document.getElementById('sizeSlider').value;
+        //     document.getElementById('sizeValue').textContent = size;
+        //     generateASCII(image, size);
+        // }
+
+        document.getElementById('sizeSlider').oninput = function(){
             size = document.getElementById('sizeSlider').value;
             document.getElementById('sizeValue').textContent = size;
             generateASCII(image, size);
-        })
+        }
 
-        document.getElementById('imageInput').addEventListener('change', function(event) {
-            
+        document.getElementById('imageInput').oninput = function(event){
             const file = event.target.files[0];
             if (!file) return;
             
             const reader = new FileReader();
             reader.onload = function(e) {
-                const img = new Image();
                 img.src = e.target.result;
                 img.onload = function() {
                     generateASCII(img, size);
                 };
             };
             reader.readAsDataURL(file);
-        });
+        }
+
+        // document.getElementById('imageInput').addEventListener('change', function(event) {
+            
+        //     const file = event.target.files[0];
+        //     if (!file) return;
+            
+        //     const reader = new FileReader();
+        //     reader.onload = function(e) {
+        //         const img = new Image();
+        //         img.src = e.target.result;
+        //         img.onload = function() {
+        //             generateASCII(img, size);
+        //         };
+        //     };
+        //     reader.readAsDataURL(file);
+        // });
 
         function generateASCII(img, largestSide) {
             image = img;
