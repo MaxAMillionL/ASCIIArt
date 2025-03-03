@@ -62,22 +62,15 @@
     <div class="art" id="asciiArt"></div>
 
     <script>
+        var currentSlider;
         var size = document.getElementById('sizeSlider').value;
         var image = new Image();
         var contrast;
-        
-        // function changeImage(input, slider, slidervalue){
+
+        // document.getElementById(currentSlider).oninput = function(input, slider, slidervalue){
         //     input = document.getElementById(slider).value;
-        //     document.getElementById(slidervalue).textContent = input;
-        //     // generateASCII(image, input);
-        // }
-
-        // document.getElementById('sizeSlider').oninput = changeImage(size, 'sizeSlider', 'sizeValue');
-
-        // document.getElementById('sizeSlider').oninput = function(input, slider, slidervalue){
-        //     size = document.getElementById('sizeSlider').value;
-        //     document.getElementById('sizeValue').textContent = size;
-        //     generateASCII(image, size);
+        //     document.getElementById(slidervalue).textContent = size;
+        //     generateASCII(image, input);
         // }
 
         document.getElementById('sizeSlider').oninput = function(){
@@ -92,29 +85,13 @@
             
             const reader = new FileReader();
             reader.onload = function(e) {
-                img.src = e.target.result;
-                img.onload = function() {
-                    generateASCII(img, size);
+                image.src = e.target.result;
+                image.onload = function() {
+                    generateASCII(image, size);
                 };
             };
             reader.readAsDataURL(file);
         }
-
-        // document.getElementById('imageInput').addEventListener('change', function(event) {
-            
-        //     const file = event.target.files[0];
-        //     if (!file) return;
-            
-        //     const reader = new FileReader();
-        //     reader.onload = function(e) {
-        //         const img = new Image();
-        //         img.src = e.target.result;
-        //         img.onload = function() {
-        //             generateASCII(img, size);
-        //         };
-        //     };
-        //     reader.readAsDataURL(file);
-        // });
 
         function generateASCII(img, largestSide) {
             image = img;
