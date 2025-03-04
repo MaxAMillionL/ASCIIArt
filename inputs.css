@@ -1,16 +1,16 @@
-.imageInput{
+.buttonStyle{
     margin: auto;
     background-color: black;
     color:white;
     background-blend-mode: color;
     transition: transform .25s;
 }
-.imageInput:active{
+.buttonStyle:active{
     transform: translate(0px, 5px);
     -webkit-transform: translate(0px, 5px);
     box-shadow: 0px 1px 0px 0px;
 }
-.imageInput:hover{
+.buttonStyle:hover{
     transform: scale(1.2) perspective(1px)
 }
 .choose-file{
