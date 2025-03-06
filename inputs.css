@@ -1,5 +1,6 @@
 .buttonStyle{
     margin: auto;
+    vertical-align: middle;
     background-color: black;
     color:white;
     background-blend-mode: color;

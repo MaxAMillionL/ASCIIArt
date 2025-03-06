@@ -17,20 +17,22 @@
             text-shadow: #FC0 1px 0 10px;
             text-align: center;
         }
-        @keyframes colorChange {
+        /* @keyframes colorChange {
             0% { background-color: blue; }
             50% { background-color: green; }
             100% { background-color: red; }
         }
         .moving-background {
             animation: colorChange 5s linear infinite;
-        }   
+        }    */
         .grid{
             display: inline-grid;
             grid-template-columns: auto auto auto;
         }
         .slider{
             padding: 1em;
+            display: inline-block;
+            vertical-align: middle;
         }
         .button{
             padding: 1em;
@@ -38,7 +40,6 @@
         .art{
             text-align: center;            
             display: inline-block;
-            border-style: solid;
             border-color: white;
             white-space: pre;
         }
@@ -47,9 +48,8 @@
 
 <body>
     <h1>ASCII Art Generator</h1>
-
     <!-- parameter changes -->
-    <div>
+    <div>   
         <button class=buttonStyle style="display:block;width:100px; height:20px;" onclick="document.getElementById('imageInput').click()">Image Input</button>
         <input type='file' id="imageInput" style="display:none">
     </div>
@@ -65,9 +65,23 @@
             <input type="range" id="cutoffSlider" name="cutoffSlider" value="0" min="0" max="256">
             <span id="cutoffValue">0</span>
         </div>
+        <div class="slider">
+            <label for="contrastSlider">Contrast</label>
+            <input type="range" id="contrastSlider" name="contrastSlider" value="1" min="0" max="2" step=".01">
+            <span id="contrastValue">1</span>
+        </div>
+        <div class="slider">
+            <label for="brightnessSlider">Brightness</label>
+            <input type="range" id="brightnessSlider" name="brightnessSlider" value="0" min="-127" max="128" step="1">
+            <span id="brightnessValue">0</span>
+        </div>
         <div class="button">
             <button id="inverseButton" class=buttonStyle>Inverse</button>
             <span id="inverseValue"></span>
+        </div>
+        <div class="button">
+            <button id="reset" class=buttonStyle>Reset</button>
+            <span id="reset"></span>
         </div>
     </div>
 
@@ -76,56 +90,54 @@
     <!-- This is where the ASCII is printed -->
     <div class="art" id="asciiArt"></div>
 
+    <div class="button">
+        <button id="copyText" class="buttonStyle" onclick="copyText()">Copy Text</button>
+    </div>
     <br><br>
 
-    <button class=buttonStyle onclick="copyText()">Copy Text</button>
+    
 
     <script src="./functions.js"></script>
     <script>
-        var currentSlider;
-        var size = document.getElementById('sizeSlider').value;
         var image = new Image();
+        var size = document.getElementById('sizeSlider').value;
         var cutoff = document.getElementById('cutoffSlider').value;
-        var inverse = true;
+        var contrast = document.getElementById('contrastSlider').value;
+        var brightness = document.getElementById('brightnessSlider').value;
+        var inverse = false;
+        
+
         const asciiChars = " `.-':_,^=;><+!rc*/z?sLTv)J7(|Fi{C}fI31tlu[neoZ5Yxjya]2ESwqkP6h9d4VpOGbUAKXHm8RD#$Bg0MNWQ%&@";
 
         function generateASCII(img) {
             image = img;
-
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-          
-            if(img.height > img.width){
-                newHeight = size;
-                newWidth = img.width * newHeight / img.height
-            }
-            else{
-                newWidth = size;
-                newHeight = img.height * newWidth / img.width
-            }
-
-            canvas.width = newWidth;
-            canvas.height = newHeight;
-            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-            
-            
-            let asciiArt = "";
+            const canvas = document.createElement('canvas');  
+            const ctx = createCTX(canvas, img);
             const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+            let asciiArt = "";
+
+
             for (let y = 0; y < canvas.height; y++) {
                 for (let x = 0; x < canvas.width; x++) {
+                    // extract pixel information
                     const index = (y * canvas.width + x) * 4;
                     const r = imageData.data[index];
                     const g = imageData.data[index + 1];
                     const b = imageData.data[index + 2];
-                    const brightness = (r + g + b) / 3;
-                    var charIndex = Math.floor((brightness / 255) * (asciiChars.length - 1));
-                    // If we need to inverse the image
+
+                    // change pixel val based off global parameters to grayscale
+                    let tempBrightness = ((r + g + b) / 3);
+                    const pixVal = Math.min(tempBrightness * contrast + 1 * brightness, 255);
+
+                    // pick coresponding ASCII character
+                    let charIndex = Math.floor((pixVal / 255) * (asciiChars.length - 1));
                     if(inverse === true){
-                        charIndex = Math.floor((1 - (brightness / 255)) * (asciiChars.length - 1));
+                        charIndex = Math.floor((1 - (pixVal / 255)) * (asciiChars.length - 1));
                     }     
                     
                     // Cutoff characters under a certain brightness limit
-                    if(brightness > cutoff){
+                    if(pixVal > cutoff){
                         asciiArt += asciiChars[charIndex] + asciiChars[charIndex];
                     }
                     else{
@@ -134,7 +146,10 @@
                 }
                 asciiArt += "\n";
             }
+
+            // update ASCII text
             document.getElementById('asciiArt').innerText = asciiArt;
+            document.getElementById('asciiArt').style.border = "solid";
         }
 
         
