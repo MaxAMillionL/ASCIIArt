@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no" />    <title>ASCII Art Maker</title>
+    <link rel="stylesheet" href="./inputs.css">
+    <style>
+        body {
+            font-family: monospace;
+            text-align: center;
+            background-color: black;
+            background-image: radial-gradient(
+                rgba(0, 150, 0, .55), black 120%
+            );
+            height: 100vh;
+            color: white;
+            text-shadow: #FC0 1px 0 10px;
+            text-align: center;
+        }
+        @keyframes colorChange {
+            0% { background-color: blue; }
+            50% { background-color: green; }
+            100% { background-color: red; }
+        }
+        .moving-background {
+            animation: colorChange 5s linear infinite;
+        }   
+        .grid{
+            display: inline-grid;
+            grid-template-columns: auto auto auto;
+        }
+        .slider{
+            padding: 1em;
+        }
+        .button{
+            padding: 1em;
+        }
+        .art{
+            text-align: center;            
+            display: inline-block;
+            border-style: solid;
+            border-color: white;
+            white-space: pre;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>ASCII Art Generator</h1>
+
+    <!-- parameter changes -->
+    <div>
+        <button class=buttonStyle style="display:block;width:100px; height:20px;" onclick="document.getElementById('imageInput').click()">Image Input</button>
+        <input type='file' id="imageInput" style="display:none">
+    </div>
+    <br>
+    <div class="grid">
+        <div class="slider">
+            <label for="sizeSlider">Size</label>
+            <input type="range" id="sizeSlider" name="sizeSlider" min="0" max="250" value = 50>
+            <span id="sizeValue">50</span>
+        </div>
+        <div class="slider">
+            <label for="cutoffSlider">Cutoff</label>
+            <input type="range" id="cutoffSlider" name="cutoffSlider" value="0" min="0" max="256">
+            <span id="cutoffValue">0</span>
+        </div>
+        <div class="button">
+            <button id="inverseButton" class=buttonStyle>Inverse</button>
+            <span id="inverseValue"></span>
+        </div>
+    </div>
+
+    <br>
+
+    <!-- This is where the ASCII is printed -->
+    <div class="art" id="asciiArt"></div>
+
+    <br><br>
+
+    <button class=buttonStyle onclick="copyText()">Copy Text</button>
+
+    <script src="./functions.js"></script>
+    <script>
+        var currentSlider;
+        var size = document.getElementById('sizeSlider').value;
+        var image = new Image();
+        var cutoff = document.getElementById('cutoffSlider').value;
+        const asciiChars = " `.-':_,^=;><+!rc*/z?sLTv)J7(|Fi{C}fI31tlu[neoZ5Yxjya]2ESwqkP6h9d4VpOGbUAKXHm8RD#$Bg0MNWQ%&@";
+
+        function generateASCII(img) {
+            image = img;
+
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+          
+            if(img.height > img.width){
+                newHeight = size;
+                newWidth = img.width * newHeight / img.height
+            }
+            else{
+                newWidth = size;
+                newHeight = img.height * newWidth / img.width
+            }
+
+            canvas.width = newWidth;
+            canvas.height = newHeight;
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            
+            
+            let asciiArt = "";
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            for (let y = 0; y < canvas.height; y++) {
+                for (let x = 0; x < canvas.width; x++) {
+                    const index = (y * canvas.width + x) * 4;
+                    const r = imageData.data[index];
+                    const g = imageData.data[index + 1];
+                    const b = imageData.data[index + 2];
+                    const brightness = (r + g + b) / 3;
+                    var charIndex = Math.floor((brightness / 255) * (asciiChars.length - 1));  
+                    asciiArt += asciiChars[charIndex] + asciiChars[charIndex];
+                }
+                asciiArt += "\n";
+            }
+            document.getElementById('asciiArt').innerText = asciiArt;
+        }
+
+        
+    </script>
+</body>
+</html>
