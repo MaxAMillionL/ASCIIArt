@@ -27,7 +27,11 @@
         }    */
         .grid{
             display: inline-grid;
-            grid-template-columns: auto auto auto;
+            grid-template-columns: auto auto auto auto;
+        }
+        .grid2{
+            display: inline-grid;
+            grid-template-columns: auto auto;
         }
         .slider{
             padding: 1em;
@@ -48,12 +52,14 @@
 
 <body>
     <h1>ASCII Art Generator</h1>
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
     <!-- parameter changes -->
     <div>   
         <button class=buttonStyle style="display:block;width:100px; height:20px;" onclick="document.getElementById('imageInput').click()">Image Input</button>
         <input type='file' id="imageInput" style="display:none">
     </div>
     <br>
+    
     <div class="grid">
         <div class="slider">
             <label for="sizeSlider">Size</label>
@@ -75,6 +81,11 @@
             <input type="range" id="brightnessSlider" name="brightnessSlider" value="0" min="-127" max="128" step="1">
             <span id="brightnessValue">0</span>
         </div>
+    </div>
+
+    <br>
+
+    <div class="grid2">
         <div class="button">
             <button id="inverseButton" class=buttonStyle>Inverse</button>
             <span id="inverseValue"></span>
@@ -87,12 +98,13 @@
 
     <br>
 
+    <div class="button">
+        <button id="copyText" class="buttonStyle" onclick="copyText()" style="visibility: hidden;">Copy Text</button>
+    </div>
     <!-- This is where the ASCII is printed -->
     <div class="art" id="asciiArt"></div>
 
-    <div class="button">
-        <button id="copyText" class="buttonStyle" onclick="copyText()">Copy Text</button>
-    </div>
+    
     <br><br>
 
     
@@ -150,6 +162,7 @@
             // update ASCII text
             document.getElementById('asciiArt').innerText = asciiArt;
             document.getElementById('asciiArt').style.border = "solid";
+            document.getElementById('copyText').style.visibility = "visible";
         }
 
         
